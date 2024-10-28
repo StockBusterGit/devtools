@@ -31,6 +31,24 @@ init:
 		cd Backend && npm install; \
 	fi
 
+update:
+	@if [ -d "./Frontend" ]; then \
+		echo "Updating Frontend repository..."; \
+		cd Frontend && git pull; \
+	fi
+	@if [ -d "./Frontend" ]; then \
+		echo "Installing Frontend dependencies..."; \
+		cd Frontend && npm install; \
+	fi
+	@if [ -d "./Backend" ]; then \
+		echo "Updating Backend repository..."; \
+		cd Backend && git pull; \
+	fi
+	@if [ -d "./Backend" ]; then \
+		echo "Installing Backend dependencies..."; \
+		cd Backend && npm install; \
+	fi
+
 start:
 	docker-compose up -d
 
