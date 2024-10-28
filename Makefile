@@ -12,6 +12,10 @@ init:
 		echo "Copying .env.example to .env in Frontend..."; \
 		cp ./Frontend/.env.example ./Frontend/.env; \
 	fi
+	@if [ -d "./Frontend" ]; then \
+		echo "Installing Frontend dependencies..."; \
+		cd Frontend && npm install; \
+	fi
 	@if [ ! -d "./Backend" ]; then \
 		echo "Cloning Backend repository..."; \
 		git clone -b develop $(BACKEND_REPO); \
@@ -21,6 +25,10 @@ init:
 	@if [ -f "./Backend/.env.example" ]; then \
 		echo "Copying .env.example to .env in Backend..."; \
 		cp ./Backend/.env.example ./Backend/.env; \
+	fi
+	@if [ -d "./Backend" ]; then \
+		echo "Installing Backend dependencies..."; \
+		cd Backend && npm install; \
 	fi
 
 start:
