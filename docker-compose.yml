@@ -16,3 +16,16 @@ services:
 
             - CHOKIDAR_USEPOLLING=true
         restart: always
+mongodb_service:
+    image: mongo
+    container_name: mongodb_service
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+    restart: always
+    volumes:
+      - mongodb_service:/data/db
+
+volumes:
+  mongodb_service:
