@@ -34,7 +34,7 @@ init:
 update:
 	@if [ -d "./Frontend" ]; then \
 		echo "Updating Frontend repository..."; \
-		cd Frontend && git pull; \
+		cd Frontend && git checkout develop  && git pull; \
 	fi
 	@if [ -d "./Frontend" ]; then \
 		echo "Installing Frontend dependencies..."; \
@@ -42,7 +42,7 @@ update:
 	fi
 	@if [ -d "./Backend" ]; then \
 		echo "Updating Backend repository..."; \
-		cd Backend && git pull; \
+		cd Backend && git checkout develop  && git pull; \
 	fi
 	@if [ -d "./Backend" ]; then \
 		echo "Installing Backend dependencies..."; \
