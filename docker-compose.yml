@@ -8,5 +8,11 @@ services:
         ports:
             - '3000:3000'
         environment:
+      - MONGO_HOST=mongodb_service
+      - MONGO_PORT=27017
+      - MONGO_DATABASE=${MONGO_DATABASE}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+
             - CHOKIDAR_USEPOLLING=true
         restart: always
