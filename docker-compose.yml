@@ -3,6 +3,8 @@ services:
     app:
         image: stockbuster
         container_name: stockbuster
+        depends_on:
+           - mongodb_service
         volumes:
             - './Backend:/app'
         ports:
