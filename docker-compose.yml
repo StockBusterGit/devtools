@@ -27,7 +27,7 @@ mongodb_service:
       - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
     restart: always
     volumes:
-      - mongodb_service:/data/db
+      - mongodb_service:/data/db 
 
 volumes:
   mongodb_service:
