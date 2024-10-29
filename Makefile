@@ -1,5 +1,18 @@
+# import .env file
+include .env
+export $(shell sed 's/=.*//' .env)
+
+# Nom du conteneur MySQL
+DB_CONTAINER=stockbuster-mysql
+# Nom du fichier de sauvegarde de la base de données
+EXPORT_FILE=backup.sql
+
+# URL des dépôts Git
 FRONTEND_REPO=git@github.com:StockBusterGit/Frontend.git
 BACKEND_REPO=git@github.com:StockBusterGit/Backend.git
+
+# Détection de la commande docker-compose
+DOCKER_COMPOSE = $(shell if docker compose version > /dev/null 2>&1; then echo "docker compose"; else echo "docker-compose"; fi)
 
 init:
 	@if [ ! -d "./Frontend" ]; then \
@@ -32,6 +45,9 @@ init:
 	fi
 
 update:
+	@echo "Updating current directory repository..."
+	@git checkout develop && git pull
+
 	@if [ -d "./Frontend" ]; then \
 		echo "Updating Frontend repository..."; \
 		cd Frontend && git checkout develop  && git pull; \
@@ -49,13 +65,25 @@ update:
 		cd Backend && npm install; \
 	fi
 
+# Cible pour exporter la base de données depuis le conteneur MySQL
+export-db:
+	@echo "Exporting database from container $(DB_CONTAINER) to $(EXPORT_FILE)..."
+	@docker exec $(DB_CONTAINER) sh -c "exec mysqldump -u $(MYSQL_USERNAME) -p$(MYSQL_PASSWORD) $(MYSQL_DATABASE)" > $(EXPORT_FILE)
+	@echo "Database exported to $(EXPORT_FILE)."
+
+# Cible pour importer la base de données dans le conteneur MySQL
+import-db:
+	@echo "Importing database from $(EXPORT_FILE) to container $(DB_CONTAINER)..."
+	@docker exec -i $(DB_CONTAINER) sh -c "exec mysql -u $(MYSQL_USERNAME) -p$(MYSQL_PASSWORD) $(MYSQL_DATABASE)" < $(EXPORT_FILE)
+	@echo "Database imported from $(EXPORT_FILE)."
+
 start:
-	docker-compose up -d
+	$(DOCKER_COMPOSE)  up -d
 
 stop:
-	docker-compose down
+	$(DOCKER_COMPOSE)  down
 
 restart: stop start
 
 logs:
-	docker-compose logs -f
+	$(DOCKER_COMPOSE)  logs -f
