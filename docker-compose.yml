@@ -1,6 +1,6 @@
 services:
     backend:
-        image: build:./backend
+        build: ./backend
         container_name: stockbuster
         depends_on:
             - mysql
