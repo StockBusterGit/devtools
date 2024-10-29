@@ -2,3 +2,7 @@ Frontend/
 Backend/
 
 .idea/
+
+.env*
+
+!.env.example

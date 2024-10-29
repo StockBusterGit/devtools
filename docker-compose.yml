@@ -1,0 +1,32 @@
+services:
+    backend:
+        image: stockbuster
+        container_name: stockbuster
+        depends_on:
+            - mysql
+        volumes:
+            - './Backend:/app'
+        ports:
+            - '3000:3000'
+        environment:
+            - MYSQL_HOST=mysql
+            - MYSQL_PORT=3306
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_USERNAME=${MYSQL_USERNAME}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - CHOKIDAR_USEPOLLING=true
+        restart: always
+    mysql:
+        image: mysql:9.1
+        container_name: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_USER=${MYSQL_USERNAME}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        restart: always
+        volumes:
+            - mysql_data:/data/db
+
+volumes:
+    mysql_data:
