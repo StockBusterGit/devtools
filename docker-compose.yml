@@ -1,7 +1,17 @@
 services:
+    frontend:
+        build: ./frontend
+        container_name: stockbuster-frontend
+        volumes:
+            - './Frontend:/app'
+        ports:
+            - '8080:8080'
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+        restart: always
     backend:
         build: ./backend
-        container_name: stockbuster
+        container_name: stockbuster-backend
         depends_on:
             - mysql
         volumes:
@@ -18,7 +28,7 @@ services:
         restart: always
     mysql:
         image: mysql:9.1
-        container_name: mysql
+        container_name: stockbuster-mysql
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
             - MYSQL_DATABASE=${MYSQL_DATABASE}
