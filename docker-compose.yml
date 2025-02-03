@@ -2,18 +2,28 @@ services:
     frontend:
         build: ./frontend
         container_name: stockbuster-frontend
+        depends_on:
+            backend:
+                condition: service_healthy
+        restart: unless-stopped
         volumes:
             - './Frontend:/app'
         ports:
             - '8080:8080'
         environment:
             - CHOKIDAR_USEPOLLING=true
-        restart: always
+        healthcheck:
+            test: [ "CMD", "wget", "--spider", "http://frontend:8080/" ]
+            interval: 30s
+            timeout: 10s
+            retries: 5
     backend:
         build: ./backend
         container_name: stockbuster-backend
         depends_on:
-            - mysql
+            mysql:
+                condition: service_healthy
+        restart: unless-stopped
         volumes:
             - './Backend:/app'
         ports:
@@ -25,18 +35,28 @@ services:
             - MYSQL_USERNAME=${MYSQL_USERNAME}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD}
             - CHOKIDAR_USEPOLLING=true
-        restart: always
+        healthcheck:
+            test: [ "CMD", "wget", "--spider", "http://backend:3000/health" ]
+            interval: 30s
+            timeout: 10s
+            retries: 5
     mysql:
         image: mysql:9.1
         container_name: stockbuster-mysql
+        restart: unless-stopped
+        volumes:
+            - mysql_data:/data/db
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
             - MYSQL_DATABASE=${MYSQL_DATABASE}
             - MYSQL_USER=${MYSQL_USERNAME}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        restart: always
-        volumes:
-            - mysql_data:/data/db
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "$MYSQL_USER", "-p$MYSQL_PASSWORD" ]
+            interval: 10s
+            timeout: 5s
+            retries: 3
+            start_period: 20s
 
 volumes:
     mysql_data:
