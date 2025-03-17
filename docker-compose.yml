@@ -14,6 +14,7 @@ services:
             - '8080:8080'
         environment:
             - CHOKIDAR_USEPOLLING=true
+            - NEXT_PUBLIC_API_URL=${API_URL}
         healthcheck:
             test: [ "CMD", "wget", "--spider", "http://frontend:8080/" ]
             interval: 30s
@@ -39,6 +40,9 @@ services:
             - MYSQL_USERNAME=${MYSQL_USERNAME}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD}
             - CHOKIDAR_USEPOLLING=true
+            - JWT_SECRET=${JWT_SECRET}
+            - JWT_EXPIRATION=${JWT_EXPIRATION}
+            - FRONTEND_URL=${FRONTEND_URL}
         healthcheck:
             test: [ "CMD", "wget", "--spider", "http://backend:3000/health" ]
             interval: 30s
